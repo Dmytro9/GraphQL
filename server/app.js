@@ -4,6 +4,7 @@ const schema = require("./schema/schema");
 const mongoose = require("mongoose");
 
 const app = express();
+const cors = require('cors');
 
 const options = {
   keepAlive: 1,
@@ -21,6 +22,7 @@ mongoose.connect(
 
 app.use(
   "/graphql",
+  cors(),
   graphqlHTTP({
     schema,
     graphiql: true // to use graphical tool
