@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
-import { useQuery } from '@apollo/react-hooks';
-import { getAuthorsQuery } from '../queries/queries';
+import React, { useState } from "react";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import {
+  getAuthorsQuery,
+  addBookMutation,
+  getBooksQuery
+} from "../queries/queries";
 
 function AddBook() {
   const { loading, error, data } = useQuery(getAuthorsQuery);
+  const [
+    addBook,
+    // { loading: mutationLoading, error: mutationError }
+  ] = useMutation(addBookMutation);
 
   const [formData, handleChange] = useState({
-    name: '',
-    genre: '',
-    authorId: ''
+    name: "",
+    genre: "",
+    authorId: ""
   });
 
   // if (loading) return <p>Loading authors...</p>;
@@ -23,12 +31,20 @@ function AddBook() {
 
   const handleSubmit = event => {
     event.preventDefault();
-    const data = {
+    const sendData = {
       name: formData.name,
       genre: formData.genre,
       authorId: formData.authorId
     };
-    console.log(data);
+    addBook({
+      variables: sendData,
+      refetchQueries: [{ query: getBooksQuery }]
+    });
+    handleChange({
+      name: "",
+      genre: "",
+      authorId: ""
+    });
   };
 
   return (
